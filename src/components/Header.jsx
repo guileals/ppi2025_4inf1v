@@ -14,7 +14,15 @@ export function Header() {
       </Link>
       <Link to="/cart" className={styles.link}>
         <div className={styles.cartInfo}>
-          <ShoppingBasket size={32} />
+          <div className={styles.cartIcon}>
+            <ShoppingBasket size={32} />
+            {cart.length > 0 && (
+              <span className={styles.cartCount}>
+                {cart.reduce((total, item) => total + item.quantity, 0)}
+              </span>
+            )}
+          </div>
+
           <p>
             Total: ${" "}
             {cart

@@ -4,10 +4,12 @@
   padding: 2rem;
   text-align: center;
   background-color: var(--gray-100);
+  /* width: 40rem; */
 }
 
 .productImage {
   width: 100%;
+  max-width: 30rem;
   border-radius: 0.5rem;
 }
 

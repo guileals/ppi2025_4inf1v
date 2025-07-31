@@ -73,3 +73,12 @@
   font-size: 2rem;
   margin: 0 2rem;
 }
+
+.removeButton {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--primary-dark);
+  font-size: 2.5rem;
+  margin-left: 2rem;
+}

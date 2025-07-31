@@ -25,6 +25,10 @@
   max-width: 20rem;
 }
 
+.container p {
+  font-size: 1.5rem;
+}
+
 .cartInfo {
   border-radius: 3rem;
   background-color: var(--primary-light);
@@ -40,3 +44,20 @@
   color: var(--primary);
 }
 
+.cartIcon {
+  position: relative;
+  display: inline-block;
+}
+
+.cartCount {
+  position: absolute;
+  top: -0.8rem;
+  right: -2rem;
+  font-size: 1.5rem;
+  border-radius: 1rem;
+  background-color: var(--primary-dark);
+  color: var(--gray-100);
+  padding: 0.2rem 0.6rem;
+  font-weight: bold;
+  z-index: 1;
+}
