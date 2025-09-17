@@ -1,5 +1,4 @@
 import { useState, useEffect, createContext } from "react";
-import { supabase } from "../utils/supabase";
 
 export const CartContext = createContext({
   // Context to manage the products state
@@ -15,37 +14,28 @@ export const CartContext = createContext({
 });
 
 export function CartProvider({ children }) {
+  // State to manage products
+  var category = "smartphones";
+  var limit = 10;
+  var apiUrl = `https://dummyjson.com/products/category/${category}?limit=${limit}&select=id,thumbnail,title,price,description`;
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // async function fetchProductsAPI() {
-    //   // State to manage products
-    //   var category = "smartphones";
-    //   var limit = 10;
-    //   var apiUrl = `https://dummyjson.com/products/category/${category}?limit=${limit}&select=id,thumbnail,title,price,description`;
-    //   try {
-    //     const response = await fetch(apiUrl);
-    //     const data = await response.json();
-    //     setProducts(data.products);
-    //   } catch (error) {
-    //     setError(error);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // }
-    // fetchProductsAPI();
-    async function fetchProductsSupabase() {
-      const { data, error } = await supabase.from("product_2v").select();
-      if (error) {
-        setError(`Fetching products failed! ${error}`);
-      } else {
-        setProducts(data);
+    async function fetchProducts() {
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        setProducts(data.products);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
-    fetchProductsSupabase();
+    fetchProducts();
   }, []);
 
   // State to manage the cart
@@ -57,7 +47,7 @@ export function CartProvider({ children }) {
     if (existingProduct) {
       updateQtyCart(product.id, existingProduct.quantity + 1);
     } else {
-      setCart((prevCart) => [...prevCart, { ...product, quantity: 1 }]);
+      setCart((prevCart) => [...prevCart, {...product, quantity: 1}]);
     }
   }
 
