@@ -14,7 +14,7 @@
 
 .cart p {
   font-size: 2rem;
-  color: var(--primary-contrast-dark);
+  color: var(--primary-dark);
 }
 
 .cartItem {
@@ -26,7 +26,7 @@
   margin: 2rem;
   border-radius: 1rem;
   background-color: var(--gray-100);
-  color: var(--primary-contrast-dark);
+  color: var(--primary-dark);
 }
 
 .cartItem img {

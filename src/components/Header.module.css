@@ -5,7 +5,7 @@
   gap: 3rem;
   height: 15rem;
   padding: 5rem;
-  background-color: var(--primary-dark);
+  background-color: var(--primary-light);
 
   position: fixed;
   top: 0;
@@ -14,9 +14,17 @@
   z-index: 1000;
 }
 
+.actions {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  gap: 2rem;
+}
+
 .container h1 {
   font-size: 5rem;
   font-weight: bolder;
+  color: var(--primary-dark);
 }
 
 .containerImg img {
@@ -31,8 +39,8 @@
 
 .cartInfo {
   border-radius: 3rem;
-  background-color: var(--primary-light);
-  color: var(--primary-contrast-dark);
+  background-color: var(--background);
+  color: var(--text);
   padding: 2rem;
   font-size: 3rem;
   font-weight: bold;
@@ -40,8 +48,14 @@
 }
 
 .link {
+  font-size: 2rem;
   text-decoration: none;
-  color: var(--primary);
+  color: var(--text);
+  transition: color 0.3s;
+}
+
+.link:hover {
+  color: var(--primary-dark);
 }
 
 .cartIcon {
