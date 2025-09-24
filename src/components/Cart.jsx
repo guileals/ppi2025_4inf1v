@@ -1,6 +1,6 @@
 import styles from "./Cart.module.css";
 import { useContext } from "react";
-import { CartContext } from "../service/CartContext";
+import { CartContext } from "../context/CartContext";
 import { Trash } from "lucide-react";
 
 export function Cart() {
