@@ -1,0 +1,143 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15rem;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.container h1 {
+  font-size: 4rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 40rem;
+  padding: 2rem;
+  background: var(--background);
+  border-radius: 1rem;
+  /* box-shadow: 0 1rem 1rem -0.25rem rgb(0 0 0 / 0.1), 0 1rem 1rem -0.25rem rgb(0 0 0 / 0.1); */
+  box-shadow: 0 0 1rem 0.25rem var(--primary);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 1.5rem;
+  font-weight: bolder;
+  color: var(--gray-700);
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 0.25rem solid var(--gray-400);
+  border-radius: 0.75rem;
+  font-size: 1.5rem;
+  transition: all 0.2s ease;
+  background-color: var(--background);
+  color: var(--text);
+
+  &:hover {
+    border-color: var(--gray-300);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem var(--primary-light);
+  }
+}
+
+
+.iconBtn {
+  position: absolute;
+  top: 50%;
+  right: 1.25rem;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  background: transparent;
+  border: 0;
+  color: var(--gray-700);
+  cursor: pointer;
+  border-radius: 1rem;
+}
+
+.iconBtn:hover {
+  color: var(--primary);
+}
+
+.iconBtn:focus-visible {
+  outline: 0.5rem solid var(--primary);
+  outline-offset: 0.5rem;
+}
+
+
+.error {
+  font-size: 1.25rem;
+  font-style: italic;
+  color: #ef4444;
+  margin-top: 0.25rem;
+}
+
+.button {
+  margin-top: 0.5rem;
+  padding: 0.875rem;
+  border: none;
+  border-radius: 0.75rem;
+  background-color: var(--primary);
+  color: var(--primary-contrast);
+  font-size: 2rem;
+  font-weight: bolder;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background-color: var(--primary-dark);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 0.5rem var(--primary-light);
+  }
+}
+
+.info {
+  margin-top: 1rem;
+  font-size: 1.5rem;
+  color: var(--gray-600);
+  cursor: pointer;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  padding: 0;
+
+  &:hover {
+    color: var(--gray-900);
+  }
+}

@@ -1,0 +1,39 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15rem;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.container h1 {
+  font-size: 4rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.userInfo{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  font-size: 2rem;
+}
+
+.button {
+  margin-top: 0.5rem;
+  padding: 1.5rem 3rem;
+  border: none;
+  border-radius: 0.75rem;
+  background-color: var(--primary);
+  color: var(--gray-900);
+  font-size: 2rem;
+  font-weight: bolder;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: var(--primary-dark);
+}
