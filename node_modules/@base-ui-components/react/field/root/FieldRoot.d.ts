@@ -1,0 +1,77 @@
+import * as React from 'react';
+import { BaseUIComponentProps } from "../../utils/types.js";
+/**
+ * Groups all parts of the field.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Field](https://base-ui.com/react/components/field)
+ */
+export declare const FieldRoot: React.ForwardRefExoticComponent<FieldRoot.Props & React.RefAttributes<HTMLDivElement>>;
+export interface FieldValidityData {
+  state: {
+    badInput: boolean;
+    customError: boolean;
+    patternMismatch: boolean;
+    rangeOverflow: boolean;
+    rangeUnderflow: boolean;
+    stepMismatch: boolean;
+    tooLong: boolean;
+    tooShort: boolean;
+    typeMismatch: boolean;
+    valueMissing: boolean;
+    valid: boolean | null;
+  };
+  error: string;
+  errors: string[];
+  value: unknown;
+  initialValue: unknown;
+}
+export declare namespace FieldRoot {
+  interface State {
+    /**
+     * Whether the component should ignore user interaction.
+     */
+    disabled: boolean;
+    touched: boolean;
+    dirty: boolean;
+    valid: boolean | null;
+    filled: boolean;
+    focused: boolean;
+  }
+  interface Props extends BaseUIComponentProps<'div', State> {
+    /**
+     * Whether the component should ignore user interaction.
+     * Takes precedence over the `disabled` prop on the `<Field.Control>` component.
+     * @default false
+     */
+    disabled?: boolean;
+    /**
+     * Identifies the field when a form is submitted.
+     * Takes precedence over the `name` prop on the `<Field.Control>` component.
+     */
+    name?: string;
+    /**
+     * A function for custom validation. Return a string or an array of strings with
+     * the error message(s) if the value is invalid, or `null` if the value is valid.
+     */
+    validate?: (value: unknown, formValues: Record<string, unknown>) => string | string[] | null | Promise<string | string[] | null>;
+    /**
+     * Determines when the field should be validated.
+     *
+     * - **onBlur** triggers validation when the control loses focus
+     * - **onChange** triggers validation on every change to the control value
+     * @default 'onBlur'
+     */
+    validationMode?: 'onBlur' | 'onChange';
+    /**
+     * How long to wait between `validate` callbacks if
+     * `validationMode="onChange"` is used. Specified in milliseconds.
+     * @default 0
+     */
+    validationDebounceTime?: number;
+    /**
+     * Whether the field is forcefully marked as invalid.
+     */
+    invalid?: boolean;
+  }
+}

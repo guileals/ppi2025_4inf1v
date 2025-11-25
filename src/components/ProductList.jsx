@@ -33,24 +33,42 @@ export function ProductList() {
     setFilteredProducts(products);
   }
 
+  // Log apenas quando `products` mudar, e gravar um snapshot (JSON)
+  // para evitar que o console mostre referências mutáveis depois.
+  // useEffect(() => {
+  //   // Só registrar quando houver produtos (evita log inicial com array vazio)
+  //   if (!products || products.length === 0) return;
+  //   try {
+  //     const snapshot = JSON.parse(JSON.stringify(products));
+  //     console.log("Products from supabase:", snapshot);
+  //   } catch (err) {
+  //     console.log("Products from supabase (could not stringify):", products);
+  //   }
+  // }, [products]);
+
+
   return (
     <div className={styles.container}>
       <div className={styles.searchContainer}>
         <input
           ref={searchInput}
           type="text"
-          placeholder="Search products..."
+          placeholder="Procurar produtos..."
           className={styles.searchInput}
           onChange={handleSearch}
         />
         <button className={styles.searchButton} onClick={handleClear}>
-          CLEAR
+          Limpar
         </button>
       </div>
       <div className={styles.productList}>
-        {filteredProducts.map((product) => (
-          <Product key={product.id} product={product} />
-        ))}
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((product) => (
+            <Product key={product.id} product={product} />
+          ))
+        ) : (
+          <p>Nenhum produto encontrado.</p>
+        )}
       </div>
       {loading && (
         <div>
@@ -59,7 +77,7 @@ export function ProductList() {
             style={{ margin: "2rem auto", display: "block" }}
             sx={{ color: "#001111" }}
           />
-          <p>Loading products...</p>
+          <p>Carregando Produtos...</p>
         </div>
       )}
       {error && <p>❌ {error}</p>}

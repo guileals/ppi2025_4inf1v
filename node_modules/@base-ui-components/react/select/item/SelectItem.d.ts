@@ -1,0 +1,44 @@
+import * as React from 'react';
+import type { BaseUIComponentProps, NonNativeButtonProps } from "../../utils/types.js";
+/**
+ * An individual option in the select menu.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Select](https://base-ui.com/react/components/select)
+ */
+export declare const SelectItem: React.NamedExoticComponent<SelectItem.Props & React.RefAttributes<HTMLDivElement>>;
+export declare namespace SelectItem {
+  interface State {
+    /**
+     * Whether the item should ignore user interaction.
+     */
+    disabled: boolean;
+    /**
+     * Whether the item is selected.
+     */
+    selected: boolean;
+    /**
+     * Whether the item is highlighted.
+     */
+    highlighted: boolean;
+  }
+  interface Props extends NonNativeButtonProps, Omit<BaseUIComponentProps<'div', State>, 'id'> {
+    children?: React.ReactNode;
+    /**
+     * A unique value that identifies this select item.
+     * @default null
+     */
+    value?: any;
+    /**
+     * Whether the component should ignore user interaction.
+     * @default false
+     */
+    disabled?: boolean;
+    /**
+     * Specifies the text label to use when the item is matched during keyboard text navigation.
+     *
+     * Defaults to the item text content if not provided.
+     */
+    label?: string;
+  }
+}

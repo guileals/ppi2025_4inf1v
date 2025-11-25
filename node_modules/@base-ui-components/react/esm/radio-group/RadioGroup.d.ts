@@ -1,0 +1,62 @@
+import * as React from 'react';
+import type { BaseUIComponentProps } from "../utils/types.js";
+import type { FieldRoot } from "../field/root/FieldRoot.js";
+import { type BaseUIEventDetails } from "../utils/createBaseUIEventDetails.js";
+/**
+ * Provides a shared state to a series of radio buttons.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Radio Group](https://base-ui.com/react/components/radio)
+ */
+export declare const RadioGroup: React.ForwardRefExoticComponent<RadioGroup.Props & React.RefAttributes<HTMLDivElement>>;
+export declare namespace RadioGroup {
+  interface State extends FieldRoot.State {
+    /**
+     * Whether the user should be unable to select a different radio button in the group.
+     */
+    readOnly: boolean | undefined;
+  }
+  interface Props extends Omit<BaseUIComponentProps<'div', State>, 'value'> {
+    /**
+     * Whether the component should ignore user interaction.
+     * @default false
+     */
+    disabled?: boolean;
+    /**
+     * Whether the user should be unable to select a different radio button in the group.
+     * @default false
+     */
+    readOnly?: boolean;
+    /**
+     * Whether the user must choose a value before submitting a form.
+     * @default false
+     */
+    required?: boolean;
+    /**
+     * Identifies the field when a form is submitted.
+     */
+    name?: string;
+    /**
+     * The controlled value of the radio item that should be currently selected.
+     *
+     * To render an uncontrolled radio group, use the `defaultValue` prop instead.
+     */
+    value?: unknown;
+    /**
+     * The uncontrolled value of the radio button that should be initially selected.
+     *
+     * To render a controlled radio group, use the `value` prop instead.
+     */
+    defaultValue?: unknown;
+    /**
+     * Callback fired when the value changes.
+     */
+    onValueChange?: (value: unknown, eventDetails: ChangeEventDetails) => void;
+    /**
+     * A ref to access the hidden input element.
+     */
+    inputRef?: React.Ref<HTMLInputElement>;
+  }
+  type ChangeEventReason = 'none';
+  type ChangeEventDetails = BaseUIEventDetails<ChangeEventReason>;
+}

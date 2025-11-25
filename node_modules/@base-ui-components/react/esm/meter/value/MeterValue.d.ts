@@ -1,0 +1,15 @@
+import * as React from 'react';
+import type { BaseUIComponentProps } from "../../utils/types.js";
+import type { MeterRoot } from "../root/MeterRoot.js";
+/**
+ * A text element displaying the current value.
+ * Renders a `<span>` element.
+ *
+ * Documentation: [Base UI Meter](https://base-ui.com/react/components/meter)
+ */
+export declare const MeterValue: React.ForwardRefExoticComponent<MeterValue.Props & React.RefAttributes<HTMLSpanElement>>;
+export declare namespace MeterValue {
+  interface Props extends Omit<BaseUIComponentProps<'span', MeterRoot.State>, 'children'> {
+    children?: null | ((formattedValue: string, value: number) => React.ReactNode);
+  }
+}

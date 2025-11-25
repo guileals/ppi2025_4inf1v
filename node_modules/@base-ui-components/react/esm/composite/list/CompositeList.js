@@ -1,0 +1,109 @@
+/* eslint-disable no-bitwise */
+'use client';
+
+import * as React from 'react';
+import { useRefWithInit } from '@base-ui-components/utils/useRefWithInit';
+import { useEventCallback } from '@base-ui-components/utils/useEventCallback';
+import { useIsoLayoutEffect } from '@base-ui-components/utils/useIsoLayoutEffect';
+import { CompositeListContext } from "./CompositeListContext.js";
+import { jsx as _jsx } from "react/jsx-runtime";
+/**
+ * Provides context for a list of items in a composite component.
+ * @internal
+ */
+export function CompositeList(props) {
+  const {
+    children,
+    elementsRef,
+    labelsRef,
+    onMapChange
+  } = props;
+  const nextIndexRef = React.useRef(0);
+  const listeners = useRefWithInit(createListeners).current;
+
+  // We use a stable `map` to avoid O(n^2) re-allocation costs for large lists.
+  // `mapTick` is our re-render trigger mechanism. We also need to update the
+  // elements and label refs, but there's a lot of async work going on and sometimes
+  // the effect that handles `onMapChange` gets called after those refs have been
+  // filled, and we don't want to lose those values by setting their lengths to `0`.
+  // We also need to have them at the proper length because floating-ui uses that
+  // information for list navigation.
+
+  const map = useRefWithInit(createMap).current;
+  const [mapTick, setMapTick] = React.useState(0);
+  const lastTickRef = React.useRef(mapTick);
+  const register = useEventCallback((node, metadata) => {
+    map.set(node, metadata ?? null);
+    lastTickRef.current += 1;
+    setMapTick(lastTickRef.current);
+  });
+  const unregister = useEventCallback(node => {
+    map.delete(node);
+    lastTickRef.current += 1;
+    setMapTick(lastTickRef.current);
+  });
+  const sortedMap = React.useMemo(() => {
+    // `mapTick` is the `useMemo` trigger as `map` is stable.
+    disableEslintWarning(mapTick);
+    const newMap = new Map();
+    const sortedNodes = Array.from(map.keys()).sort(sortByDocumentPosition);
+    sortedNodes.forEach((node, index) => {
+      const metadata = map.get(node) ?? {};
+      newMap.set(node, {
+        ...metadata,
+        index
+      });
+    });
+    return newMap;
+  }, [map, mapTick]);
+  useIsoLayoutEffect(() => {
+    const shouldUpdateLengths = lastTickRef.current === mapTick;
+    if (shouldUpdateLengths) {
+      if (elementsRef.current.length !== sortedMap.size) {
+        elementsRef.current.length = sortedMap.size;
+      }
+      if (labelsRef && labelsRef.current.length !== sortedMap.size) {
+        labelsRef.current.length = sortedMap.size;
+      }
+    }
+    onMapChange?.(sortedMap);
+  }, [onMapChange, sortedMap, elementsRef, labelsRef, mapTick, lastTickRef]);
+  const subscribeMapChange = useEventCallback(fn => {
+    listeners.add(fn);
+    return () => {
+      listeners.delete(fn);
+    };
+  });
+  useIsoLayoutEffect(() => {
+    listeners.forEach(l => l(sortedMap));
+  }, [listeners, sortedMap]);
+  const contextValue = React.useMemo(() => ({
+    register,
+    unregister,
+    subscribeMapChange,
+    elementsRef,
+    labelsRef,
+    nextIndexRef
+  }), [register, unregister, subscribeMapChange, elementsRef, labelsRef, nextIndexRef]);
+  return /*#__PURE__*/_jsx(CompositeListContext.Provider, {
+    value: contextValue,
+    children: children
+  });
+}
+function createMap() {
+  return new Map();
+}
+function createListeners() {
+  return new Set();
+}
+function sortByDocumentPosition(a, b) {
+  const position = a.compareDocumentPosition(b);
+  if (position & Node.DOCUMENT_POSITION_FOLLOWING || position & Node.DOCUMENT_POSITION_CONTAINED_BY) {
+    return -1;
+  }
+  if (position & Node.DOCUMENT_POSITION_PRECEDING || position & Node.DOCUMENT_POSITION_CONTAINS) {
+    return 1;
+  }
+  return 0;
+}
+function disableEslintWarning(_) {}

@@ -1,0 +1,34 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PopoverPositionerCssVars = void 0;
+let PopoverPositionerCssVars = exports.PopoverPositionerCssVars = /*#__PURE__*/function (PopoverPositionerCssVars) {
+  /**
+   * The available width between the trigger and the edge of the viewport.
+   * @type {number}
+   */
+  PopoverPositionerCssVars["availableWidth"] = "--available-width";
+  /**
+   * The available height between the trigger and the edge of the viewport.
+   * @type {number}
+   */
+  PopoverPositionerCssVars["availableHeight"] = "--available-height";
+  /**
+   * The anchor's width.
+   * @type {number}
+   */
+  PopoverPositionerCssVars["anchorWidth"] = "--anchor-width";
+  /**
+   * The anchor's height.
+   * @type {number}
+   */
+  PopoverPositionerCssVars["anchorHeight"] = "--anchor-height";
+  /**
+   * The coordinates that this element is anchored to. Used for animations and transitions.
+   * @type {string}
+   */
+  PopoverPositionerCssVars["transformOrigin"] = "--transform-origin";
+  return PopoverPositionerCssVars;
+}({});

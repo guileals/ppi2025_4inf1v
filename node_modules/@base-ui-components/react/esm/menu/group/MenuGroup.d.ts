@@ -1,0 +1,18 @@
+import * as React from 'react';
+import { BaseUIComponentProps } from "../../utils/types.js";
+/**
+ * Groups related menu items with the corresponding label.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Menu](https://base-ui.com/react/components/menu)
+ */
+export declare const MenuGroup: React.ForwardRefExoticComponent<MenuGroup.Props & React.RefAttributes<Element>>;
+export declare namespace MenuGroup {
+  interface Props extends BaseUIComponentProps<'div', State> {
+    /**
+     * The content of the component.
+     */
+    children?: React.ReactNode;
+  }
+  interface State {}
+}

@@ -1,0 +1,1 @@
+export declare function clearPositionerStyles(positionerElement: HTMLElement, originalPositionerStyles: React.CSSProperties): void;

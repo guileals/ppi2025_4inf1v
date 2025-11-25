@@ -3,6 +3,10 @@ import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
 import { Link } from "react-router";
 
+// Componente que exibe um produto individual
+// - mostra imagem, título, descrição e preço (formatado em BRL)
+// - botão para adicionar ao carrinho usando CartContext
+
 export function Product({ product }) {
   const { addToCart } = useContext(CartContext);
 
@@ -15,7 +19,8 @@ export function Product({ product }) {
       />
       <h2 className={styles.productTitle}>{product.title}</h2>
       <p className={styles.productDescription}>{product.description}</p>
-      <p className={styles.productPrice}>${product.price}</p>
+      {/* Formata o preço para BRL (R$) usando Intl.NumberFormat */}
+      <p className={styles.productPrice}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}</p>
       {/* <Link to="/cart"> */}
       <button
         onClick={() => {
@@ -23,7 +28,7 @@ export function Product({ product }) {
         }}
         className={styles.productButton}
       >
-        ADD TO CART
+        ADICIONAR AO CARRINHO
       </button>
       {/* </Link> */}
     </div>

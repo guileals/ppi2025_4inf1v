@@ -1,0 +1,55 @@
+import { Store } from '@base-ui-components/utils/store';
+import type { TransitionStatus } from "../utils/useTransitionStatus.js";
+import type { HTMLProps } from "../utils/types.js";
+export type State = {
+  id: string | undefined;
+  modal: boolean;
+  multiple: boolean;
+  items: Record<string, React.ReactNode> | Array<{
+    label: React.ReactNode;
+    value: any;
+  }> | undefined;
+  value: any;
+  label: string;
+  open: boolean;
+  mounted: boolean;
+  forceMount: boolean;
+  transitionStatus: TransitionStatus;
+  touchModality: boolean;
+  activeIndex: number | null;
+  selectedIndex: number | null;
+  popupProps: HTMLProps;
+  triggerProps: HTMLProps;
+  triggerElement: HTMLElement | null;
+  positionerElement: HTMLElement | null;
+  scrollUpArrowVisible: boolean;
+  scrollDownArrowVisible: boolean;
+};
+export type SelectStore = Store<State>;
+export declare const selectors: {
+  id: (state: State) => string | undefined;
+  modal: (state: State) => boolean;
+  multiple: (state: State) => boolean;
+  items: (state: State) => Record<string, import("react").ReactNode> | {
+    label: React.ReactNode;
+    value: any;
+  }[] | undefined;
+  value: (state: State) => any;
+  label: (state: State) => string;
+  open: (state: State) => boolean;
+  mounted: (state: State) => boolean;
+  forceMount: (state: State) => boolean;
+  transitionStatus: (state: State) => TransitionStatus;
+  touchModality: (state: State) => boolean;
+  activeIndex: (state: State) => number | null;
+  selectedIndex: (state: State) => number | null;
+  isActive: (state: State, index: number) => boolean;
+  isSelected: (state: State, index: number, value: any) => boolean;
+  isSelectedByFocus: (state: State, index: number) => boolean;
+  popupProps: (state: State) => HTMLProps;
+  triggerProps: (state: State) => HTMLProps;
+  triggerElement: (state: State) => HTMLElement | null;
+  positionerElement: (state: State) => HTMLElement | null;
+  scrollUpArrowVisible: (state: State) => boolean;
+  scrollDownArrowVisible: (state: State) => boolean;
+};

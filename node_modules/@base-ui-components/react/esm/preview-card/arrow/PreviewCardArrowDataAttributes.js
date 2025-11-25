@@ -1,0 +1,30 @@
+import { CommonPopupDataAttributes } from "../../utils/popupStateMapping.js";
+export let PreviewCardArrowDataAttributes = function (PreviewCardArrowDataAttributes) {
+  /**
+   * Present when the preview card is open.
+   */
+  PreviewCardArrowDataAttributes[PreviewCardArrowDataAttributes["open"] = CommonPopupDataAttributes.open] = "open";
+  /**
+   * Present when the preview card is closed.
+   */
+  PreviewCardArrowDataAttributes[PreviewCardArrowDataAttributes["closed"] = CommonPopupDataAttributes.closed] = "closed";
+  /**
+   * Present when the anchor is hidden.
+   */
+  PreviewCardArrowDataAttributes[PreviewCardArrowDataAttributes["anchorHidden"] = CommonPopupDataAttributes.anchorHidden] = "anchorHidden";
+  /**
+   * Indicates which side the popup is positioned relative to the trigger.
+   * @type {'top' | 'bottom' | 'left' | 'right' | 'inline-end' | 'inline-start'}
+   */
+  PreviewCardArrowDataAttributes["side"] = "data-side";
+  /**
+   * Indicates how the popup is aligned relative to specified side.
+   * @type {'start' | 'center' | 'end'}
+   */
+  PreviewCardArrowDataAttributes["align"] = "data-align";
+  /**
+   * Present when the preview card arrow is uncentered.
+   */
+  PreviewCardArrowDataAttributes["uncentered"] = "data-uncentered";
+  return PreviewCardArrowDataAttributes;
+}({});

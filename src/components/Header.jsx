@@ -3,10 +3,15 @@ import { ShoppingBasket } from "lucide-react";
 import { Link } from "react-router";
 import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
+import { SessionContext } from "../context/SessionContext";
 import { ThemeToggle } from "./ThemeToggle";
 
+// Cabeçalho da aplicação
+// - mostra o nome da loja, links de autenticação e informações do carrinho
+
 export function Header() {
-  const { cart, session } = useContext(CartContext);
+  const { cart } = useContext(CartContext);
+  const { session, profile } = useContext(SessionContext);
 
   return (
     <div className={styles.container}>
@@ -16,7 +21,7 @@ export function Header() {
         </Link>
         {session && (
           <Link to="/user" className={styles.welcomeMessage}>
-            Welcome, {session.user.user_metadata.username} {session.user.user_metadata.admin && '⭐'}
+            Bem-vindo, {profile?.username || session.user.user_metadata.username} {profile?.admin || session.user.user_metadata?.admin ? '⭐' : ''}
           </Link>
         )}
       </div>
@@ -25,10 +30,10 @@ export function Header() {
         {!session && (
           <>
             <Link to="/signin" className={styles.link}>
-              Sign In
+              Entrar
             </Link>
             <Link to="/register" className={styles.link}>
-              Register
+              Cadastrar
             </Link>
           </>
         )}
@@ -45,13 +50,10 @@ export function Header() {
             </div>
 
             <p>
-              Total: ${" "}
-              {cart
-                .reduce(
-                  (total, product) => total + product.price * product.quantity,
-                  0
-                )
-                .toFixed(2)}
+              {/* Formata o total do carrinho como BRL */}
+              Total: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                cart.reduce((total, product) => total + product.price * product.quantity, 0)
+              )}
             </p>
           </div>
         </Link>

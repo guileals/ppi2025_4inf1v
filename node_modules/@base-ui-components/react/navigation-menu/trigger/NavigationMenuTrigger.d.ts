@@ -1,0 +1,19 @@
+import * as React from 'react';
+import type { BaseUIComponentProps, NativeButtonProps } from "../../utils/types.js";
+/**
+ * Opens the navigation menu popup when hovered or clicked, revealing the
+ * associated content.
+ * Renders a `<button>` element.
+ *
+ * Documentation: [Base UI Navigation Menu](https://base-ui.com/react/components/navigation-menu)
+ */
+export declare const NavigationMenuTrigger: React.ForwardRefExoticComponent<NavigationMenuTrigger.Props & React.RefAttributes<HTMLButtonElement>>;
+export declare namespace NavigationMenuTrigger {
+  interface State {
+    /**
+     * If `true`, the popup is open and the item is active.
+     */
+    open: boolean;
+  }
+  interface Props extends NativeButtonProps, BaseUIComponentProps<'button', State> {}
+}

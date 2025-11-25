@@ -1,6 +1,8 @@
 import { useState } from "react";
 import styles from "./LuckyNumber.module.css";
 
+// Componente de exemplo para gerar números aleatórios "da sorte"
+// Serve principalmente como demonstração/interação UI local
 export function LuckyNumber() {
   //REACT HOOK - useState()
   const [luckyNumber, setLuckyNumber] = useState(0);
@@ -12,7 +14,7 @@ export function LuckyNumber() {
     setLuckyNumber(n);
 
     if (array.includes(n)) {
-      setMessage(`The number ${n} is already picked!`);
+      setMessage(`O número ${n} já foi escolhido!`);
     } else {
       setMessage("");
       setArray([...array, n]);
@@ -22,13 +24,13 @@ export function LuckyNumber() {
   return (
     <div className={styles.container}>
       {luckyNumber ? (
-        <h1>Lucky Number = {luckyNumber}</h1>
+        <h1>Número da sorte = {luckyNumber}</h1>
       ) : (
-        <h1>Lucky Number 🎲</h1>
+        <h1>Número da sorte 🎲</h1>
       )}
       <div className={styles.buttons}>
         <button className={styles.button} onClick={handleClick}>
-          I'm feeling lucky today!
+          Estou com sorte hoje!
         </button>
         <button
           className={styles.button}
@@ -38,13 +40,13 @@ export function LuckyNumber() {
             setMessage("");
           }}
         >
-          RESET 🔄
+          RESETAR 🔄
         </button>
       </div>
       {message && <p>{message}</p>}
       {array.length > 0 && (
         <div>
-          <h3>Lucky Numbers Array:</h3>
+          <h3>Array de números da sorte:</h3>
           <p>[{array.toString()}]</p>
         </div>
       )}

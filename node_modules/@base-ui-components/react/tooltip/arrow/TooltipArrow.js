@@ -1,0 +1,50 @@
+"use strict";
+'use client';
+
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard").default;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TooltipArrow = void 0;
+var React = _interopRequireWildcard(require("react"));
+var _TooltipPositionerContext = require("../positioner/TooltipPositionerContext");
+var _popupStateMapping = require("../../utils/popupStateMapping");
+var _useRenderElement = require("../../utils/useRenderElement");
+/**
+ * Displays an element positioned against the tooltip anchor.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Tooltip](https://base-ui.com/react/components/tooltip)
+ */
+const TooltipArrow = exports.TooltipArrow = /*#__PURE__*/React.forwardRef(function TooltipArrow(componentProps, forwardedRef) {
+  const {
+    className,
+    render,
+    ...elementProps
+  } = componentProps;
+  const {
+    open,
+    arrowRef,
+    side,
+    align,
+    arrowUncentered,
+    arrowStyles
+  } = (0, _TooltipPositionerContext.useTooltipPositionerContext)();
+  const state = React.useMemo(() => ({
+    open,
+    side,
+    align,
+    uncentered: arrowUncentered
+  }), [open, side, align, arrowUncentered]);
+  const element = (0, _useRenderElement.useRenderElement)('div', componentProps, {
+    state,
+    ref: [forwardedRef, arrowRef],
+    props: [{
+      style: arrowStyles,
+      'aria-hidden': true
+    }, elementProps],
+    customStyleHookMapping: _popupStateMapping.popupStateMapping
+  });
+  return element;
+});
+if (process.env.NODE_ENV !== "production") TooltipArrow.displayName = "TooltipArrow";

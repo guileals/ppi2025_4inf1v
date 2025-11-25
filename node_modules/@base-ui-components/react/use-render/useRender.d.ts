@@ -1,0 +1,63 @@
+import * as React from 'react';
+import type { ComponentRenderFn } from "../utils/types.js";
+import { HTMLProps } from "../utils/types.js";
+import { StateAttributesMapping } from "../utils/getStyleHookProps.js";
+/**
+ * Renders a Base UI element.
+ *
+ * @public
+ */
+export declare function useRender<State extends Record<string, unknown>, RenderedElementType extends Element, Enabled extends boolean | undefined = undefined>(params: useRender.Parameters<State, RenderedElementType, Enabled>): useRender.ReturnValue<Enabled>;
+export declare namespace useRender {
+  type RenderProp<State = Record<string, unknown>> = ComponentRenderFn<React.HTMLAttributes<any>, State> | React.ReactElement<Record<string, unknown>>;
+  type ElementProps<ElementType extends React.ElementType> = React.ComponentPropsWithRef<ElementType>;
+  type ComponentProps<ElementType extends React.ElementType, State = {}, RenderFunctionProps = HTMLProps> = React.ComponentPropsWithRef<ElementType> & {
+    /**
+     * Allows you to replace the component’s HTML element
+     * with a different tag, or compose it with another component.
+     *
+     * Accepts a `ReactElement` or a function that returns the element to render.
+     */
+    render?: ComponentRenderFn<RenderFunctionProps, State> | React.ReactElement<Record<string, unknown>>;
+  };
+  interface Parameters<State, RenderedElementType extends Element, Enabled extends boolean | undefined> {
+    /**
+     * The React element or a function that returns one to override the default element.
+     */
+    render?: RenderProp<State>;
+    /**
+     * The ref to apply to the rendered element.
+     */
+    ref?: React.Ref<RenderedElementType> | React.Ref<RenderedElementType>[];
+    /**
+     * The state of the component, passed as the second argument to the `render` callback.
+     * State properties are automatically converted to data-* attributes.
+     */
+    state?: State;
+    /**
+     * Custom mapping for converting state properties to data-* attributes.
+     * @example
+     * { isActive: (value) => (value ? { 'data-is-active': '' } : null) }
+     */
+    stateAttributesMapping?: StateAttributesMapping<State>;
+    /**
+     * Props to be spread on the rendered element.
+     * They are merged with the internal props of the component, so that event handlers
+     * are merged, `className` strings and `style` properties are joined, while other external props overwrite the
+     * internal ones.
+     */
+    props?: Record<string, unknown>;
+    /**
+     * If `false`, the hook will skip most of its internal logic and return `null`.
+     * This is useful for rendering a component conditionally.
+     * @default true
+     */
+    enabled?: Enabled;
+    /**
+     * The default tag name to use for the rendered element when `render` is not provided.
+     * @default 'div'
+     */
+    defaultTagName?: keyof React.JSX.IntrinsicElements;
+  }
+  type ReturnValue<Enabled extends boolean | undefined> = Enabled extends false ? null : React.ReactElement;
+}

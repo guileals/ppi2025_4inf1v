@@ -1,0 +1,4 @@
+import type { ReferenceType, FloatingNodeType } from "../types.js";
+export declare function getNodeChildren<RT extends ReferenceType = ReferenceType>(nodes: Array<FloatingNodeType<RT>>, id: string | undefined, onlyOpenChildren?: boolean): Array<FloatingNodeType<RT>>;
+export declare function getDeepestNode<RT extends ReferenceType = ReferenceType>(nodes: Array<FloatingNodeType<RT>>, id: string | undefined): FloatingNodeType<RT> | undefined;
+export declare function getNodeAncestors<RT extends ReferenceType = ReferenceType>(nodes: Array<FloatingNodeType<RT>>, id: string | undefined): FloatingNodeType<RT>[];

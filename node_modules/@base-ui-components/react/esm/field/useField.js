@@ -1,0 +1,71 @@
+import * as ReactDOM from 'react-dom';
+import { useIsoLayoutEffect } from '@base-ui-components/utils/useIsoLayoutEffect';
+import { useLatestRef } from '@base-ui-components/utils/useLatestRef';
+import { getCombinedFieldValidityData } from "./utils/getCombinedFieldValidityData.js";
+import { useFormContext } from "../form/FormContext.js";
+import { useFieldRootContext } from "./root/FieldRootContext.js";
+export function useField(params) {
+  const {
+    formRef
+  } = useFormContext();
+  const {
+    invalid,
+    markedDirtyRef,
+    validityData,
+    setValidityData
+  } = useFieldRootContext();
+  const {
+    enabled = true,
+    value,
+    id,
+    name,
+    controlRef,
+    commitValidation
+  } = params;
+  const getValueRef = useLatestRef(params.getValue);
+  useIsoLayoutEffect(() => {
+    if (!enabled) {
+      return;
+    }
+    let initialValue = value;
+    if (initialValue === undefined) {
+      initialValue = getValueRef.current?.();
+    }
+    if (validityData.initialValue === null && initialValue !== validityData.initialValue) {
+      setValidityData(prev => ({
+        ...prev,
+        initialValue
+      }));
+    }
+  }, [enabled, setValidityData, value, validityData.initialValue, getValueRef]);
+  useIsoLayoutEffect(() => {
+    if (!enabled) {
+      return;
+    }
+    if (id) {
+      formRef.current.fields.set(id, {
+        controlRef,
+        validityData: getCombinedFieldValidityData(validityData, invalid),
+        validate() {
+          let nextValue = value;
+          if (nextValue === undefined) {
+            nextValue = getValueRef.current?.();
+          }
+          markedDirtyRef.current = true;
+          // Synchronously update the validity state so the submit event can be prevented.
+          ReactDOM.flushSync(() => commitValidation(nextValue));
+        },
+        getValueRef,
+        name
+      });
+    }
+  }, [commitValidation, controlRef, enabled, formRef, getValueRef, id, invalid, markedDirtyRef, name, validityData, value]);
+  useIsoLayoutEffect(() => {
+    const fields = formRef.current.fields;
+    return () => {
+      if (id) {
+        fields.delete(id);
+      }
+    };
+  }, [formRef, id]);
+}

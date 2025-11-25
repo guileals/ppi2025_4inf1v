@@ -3,22 +3,27 @@ import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
 import { Trash } from "lucide-react";
 
+// Componente do Carrinho
+// - lista itens do carrinho (do contexto)
+// - permite alterar quantidade, remover itens e limpar o carrinho
+
 export function Cart() {
   const { cart, updateQtyCart, removeFromCart, clearCart } =
     useContext(CartContext);
 
   return (
     <div className={styles.cart}>
-      <h2>Shopping Cart</h2>
+      <h2>Carrinho</h2>
       {cart.length === 0 ? (
-        <p>Your cart is empty.</p>
+        <p>Seu carrinho está vazio.</p>
       ) : (
         <ul>
           {cart.map((product, index) => (
             <li key={index} className={styles.cartItem}>
               <img src={product.thumbnail} alt={product.title} />
               <h3>{product.title}</h3>
-              <p>${product.price.toFixed(2)}</p>
+              {/* Formata preço para BRL */}
+              <p>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}</p>
               <div className={styles.quantityControls}>
                 <button
                   disabled={product.quantity <= 1}
@@ -49,7 +54,7 @@ export function Cart() {
       )}
       {cart.length > 0 && (
         <button onClick={clearCart} className={styles.removeButton}>
-          CLEAR CART <Trash />
+          LIMPAR CARRINHO <Trash />
         </button>
       )}
     </div>

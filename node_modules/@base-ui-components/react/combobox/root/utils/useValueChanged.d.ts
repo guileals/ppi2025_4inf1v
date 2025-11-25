@@ -1,0 +1,1 @@
+export declare function useValueChanged<T>(valueRef: React.RefObject<T>, value: T, onChangeParam: (previousValue: T) => void): void;

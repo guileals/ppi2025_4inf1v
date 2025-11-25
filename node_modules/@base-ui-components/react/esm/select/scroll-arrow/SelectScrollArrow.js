@@ -1,0 +1,168 @@
+'use client';
+
+import * as React from 'react';
+import { useTimeout } from '@base-ui-components/utils/useTimeout';
+import { useStore } from '@base-ui-components/utils/store';
+import { useSelectRootContext } from "../root/SelectRootContext.js";
+import { useSelectPositionerContext } from "../positioner/SelectPositionerContext.js";
+import { useTransitionStatus } from "../../utils/useTransitionStatus.js";
+import { useOpenChangeComplete } from "../../utils/useOpenChangeComplete.js";
+import { useRenderElement } from "../../utils/useRenderElement.js";
+import { selectors } from "../store.js";
+
+/**
+ * @internal
+ */
+export const SelectScrollArrow = /*#__PURE__*/React.forwardRef(function SelectScrollArrow(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    direction,
+    keepMounted = false,
+    ...elementProps
+  } = componentProps;
+  const {
+    store,
+    popupRef,
+    listRef,
+    handleScrollArrowVisibility
+  } = useSelectRootContext();
+  const {
+    side,
+    scrollDownArrowRef,
+    scrollUpArrowRef,
+    alignItemWithTriggerActive
+  } = useSelectPositionerContext();
+  const selector = direction === 'up' ? selectors.scrollUpArrowVisible : selectors.scrollDownArrowVisible;
+  const visible = useStore(store, selector);
+  const timeout = useTimeout();
+  const scrollArrowRef = direction === 'up' ? scrollUpArrowRef : scrollDownArrowRef;
+  const {
+    mounted,
+    transitionStatus,
+    setMounted
+  } = useTransitionStatus(visible);
+  useOpenChangeComplete({
+    open: visible,
+    ref: scrollArrowRef,
+    onComplete() {
+      if (!visible) {
+        setMounted(false);
+      }
+    }
+  });
+  const state = React.useMemo(() => ({
+    direction,
+    visible,
+    side,
+    transitionStatus
+  }), [direction, visible, side, transitionStatus]);
+  const defaultProps = {
+    hidden: !mounted,
+    'aria-hidden': true,
+    children: direction === 'up' ? '▲' : '▼',
+    style: {
+      position: 'absolute'
+    },
+    onMouseMove(event) {
+      if (event.movementX === 0 && event.movementY === 0 || timeout.isStarted()) {
+        return;
+      }
+      store.set('activeIndex', null);
+      function scrollNextItem() {
+        const popupElement = popupRef.current;
+        if (!popupElement) {
+          return;
+        }
+        store.set('activeIndex', null);
+        handleScrollArrowVisibility();
+        const isScrolledToTop = popupElement.scrollTop === 0;
+        const isScrolledToBottom = Math.round(popupElement.scrollTop + popupElement.clientHeight) >= popupElement.scrollHeight;
+        const list = listRef.current;
+
+        // Fallback when there are no items registered yet.
+        if (list.length === 0) {
+          if (direction === 'up') {
+            store.set('scrollUpArrowVisible', !isScrolledToTop);
+          } else {
+            store.set('scrollDownArrowVisible', !isScrolledToBottom);
+          }
+        }
+        if (direction === 'up' && isScrolledToTop || direction === 'down' && isScrolledToBottom) {
+          timeout.clear();
+          return;
+        }
+        if (popupRef.current && listRef.current && listRef.current.length > 0) {
+          const items = listRef.current;
+          const scrollArrowHeight = scrollArrowRef.current?.offsetHeight || 0;
+          if (direction === 'up') {
+            let firstVisibleIndex = 0;
+            const scrollTop = popupElement.scrollTop + scrollArrowHeight;
+            for (let i = 0; i < items.length; i += 1) {
+              const item = items[i];
+              if (item) {
+                const itemTop = item.offsetTop;
+                if (itemTop >= scrollTop) {
+                  firstVisibleIndex = i;
+                  break;
+                }
+              }
+            }
+            const targetIndex = Math.max(0, firstVisibleIndex - 1);
+            if (targetIndex < firstVisibleIndex) {
+              const targetItem = items[targetIndex];
+              if (targetItem) {
+                popupElement.scrollTop = Math.max(0, targetItem.offsetTop - scrollArrowHeight);
+              }
+            } else {
+              // Already at the first item; ensure we reach the absolute top to account for group labels.
+              popupElement.scrollTop = 0;
+            }
+          } else {
+            let lastVisibleIndex = items.length - 1;
+            const scrollBottom = popupElement.scrollTop + popupElement.clientHeight - scrollArrowHeight;
+            for (let i = 0; i < items.length; i += 1) {
+              const item = items[i];
+              if (item) {
+                const itemBottom = item.offsetTop + item.offsetHeight;
+                if (itemBottom > scrollBottom) {
+                  lastVisibleIndex = Math.max(0, i - 1);
+                  break;
+                }
+              }
+            }
+            const targetIndex = Math.min(items.length - 1, lastVisibleIndex + 1);
+            if (targetIndex > lastVisibleIndex) {
+              const targetItem = items[targetIndex];
+              if (targetItem) {
+                popupElement.scrollTop = targetItem.offsetTop + targetItem.offsetHeight - popupElement.clientHeight + scrollArrowHeight;
+              }
+            } else {
+              // Already at the last item; ensure we reach the true bottom.
+              popupElement.scrollTop = popupElement.scrollHeight - popupElement.clientHeight;
+            }
+          }
+        }
+        timeout.start(40, scrollNextItem);
+      }
+      timeout.start(40, scrollNextItem);
+    },
+    onMouseLeave() {
+      timeout.clear();
+    }
+  };
+  const element = useRenderElement('div', componentProps, {
+    ref: [forwardedRef, scrollArrowRef],
+    state,
+    props: [defaultProps, elementProps]
+  });
+  if (!alignItemWithTriggerActive) {
+    return null;
+  }
+  const shouldRender = visible || keepMounted;
+  if (!shouldRender) {
+    return null;
+  }
+  return element;
+});
+if (process.env.NODE_ENV !== "production") SelectScrollArrow.displayName = "SelectScrollArrow";

@@ -1,0 +1,8 @@
+import * as React from 'react';
+export interface FieldsetRootContext {
+  legendId: string | undefined;
+  setLegendId: React.Dispatch<React.SetStateAction<string | undefined>>;
+  disabled: boolean | undefined;
+}
+export declare const FieldsetRootContext: React.Context<FieldsetRootContext>;
+export declare function useFieldsetRootContext(): FieldsetRootContext;

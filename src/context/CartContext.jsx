@@ -1,170 +1,192 @@
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "../utils/supabase";
+import { SessionContext } from "./SessionContext";
 
-export const CartContext = createContext({
-  // Context to manage the products state
-  products: [],
-  loading: false,
-  error: null,
-  // Context to manage the cart state
-  cart: [],
-  addToCart: () => {},
-  updateQtyCart: () => {},
-  removeFromCart: () => {},
-  clearCart: () => {},
-  // Context to manage user session
-  session: null,
-  sessionLoading: false,
-  sessionMessage: null,
-  sessionError: null,
-  handleSignUp: () => {},
-  handleSignIn: () => {},
-  handleSignOut: () => {},
-});
+export const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    async function fetchProductsSupabase() {
-      const { data, error } = await supabase.from("product_2v").select();
-      if (error) {
-        setError(`Fetching products failed! ${error.message}`);
-      } else {
-        setProducts(data);
-      }
-      setLoading(false);
+  const [cart, setCart] = useState(() => {
+    // Recupera o carrinho do localStorage se disponível
+    try {
+      const raw = localStorage.getItem("cart");
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
     }
-    fetchProductsSupabase();
-    // State to manage products API
-    // var category = "smartphones";
-    // var limit = 10;
-    // var apiUrl = `https://dummyjson.com/products/category/${category}?limit=${limit}&select=id,thumbnail,title,price,description`;
+  });
 
-    // async function fetchProducts() {
-    //   try {
-    //     const response = await fetch(apiUrl);
-    //     const data = await response.json();
-    //     setProducts(data.products);
-    //   } catch (error) {
-    //     setError(error);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // }
-    // fetchProducts();
+  const { session } = useContext(SessionContext);
+
+  // Função para carregar os produtos da tabela 'product_1v'
+  async function refreshProducts() {
+    setLoading(true);
+    const { data, error } = await supabase.from("product_1v").select();
+    if (error) {
+      setError(`Erro ao carregar produtos: ${error.message}`);
+    } else {
+      setProducts(data); // Atualiza os produtos no estado
+    }
+    setLoading(false);
+
+    if (session && session.user) {
+      // Carregar os itens do carrinho do banco de dados se o usuário estiver logado
+      const { data: cartData, error: cartError } = await supabase
+        .from("cart")
+        .select("*, product_1v(*)")
+        .eq("user_id", session.user.id);
+
+      if (cartError) {
+        console.error("Erro ao carregar o carrinho:", cartError.message);
+      } else {
+        const mapped = cartData.map((row) => ({
+          id: row.product_id,
+          title: row.product_1v?.title || "",
+          price: row.product_1v?.price || 0,
+          thumbnail: row.product_1v?.thumbnail || "",
+          quantity: row.quantity,
+        }));
+        setCart(mapped);
+      }
+    }
+  }
+
+  // Carregar produtos ao montar a aplicação (mesmo sem sessão).
+  // O carregamento do carrinho (associado ao usuário) continuará
+  // sendo feito quando a `session` estiver disponível.
+  useEffect(() => {
+    refreshProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // State to manage the cart
-  const [cart, setCart] = useState([]);
+  // Quando a sessão mudar, chamar refreshProducts novamente para garantir
+  // que itens relacionados ao usuário (carrinho) sejam recarregados.
+  useEffect(() => {
+    if (session) {
+      refreshProducts();
+    }
+  }, [session]);
 
+  // Persistir o carrinho no localStorage sempre que ele mudar
+  useEffect(() => {
+    try {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    } catch (e) {
+      // Ignorar erros de escrita (por exemplo, limite de armazenamento)
+    }
+  }, [cart]);
+
+  // Função para adicionar produto ao carrinho
   function addToCart(product) {
-    // Check if the product is already in the cart
     const existingProduct = cart.find((item) => item.id === product.id);
-    if (existingProduct) {
-      updateQtyCart(product.id, existingProduct.quantity + 1);
+    if (session && session.user) {
+      (async () => {
+        try {
+          const { data: existing } = await supabase
+            .from("cart")
+            .select("*")
+            .eq("user_id", session.user.id)
+            .eq("product_id", product.id)
+            .maybeSingle();
+
+          if (existing) {
+            const newQty = existing.quantity + 1;
+            await supabase
+              .from("cart")
+              .update({ quantity: newQty })
+              .eq("id", existing.id);
+            setCart((prev) =>
+              prev.map((it) =>
+                it.id === product.id ? { ...it, quantity: it.quantity + 1 } : it
+              )
+            );
+          } else {
+            await supabase.from("cart").insert([
+              {
+                user_id: session.user.id,
+                product_id: product.id,
+                quantity: 1,
+              },
+            ]);
+            setCart((prev) => [...prev, { ...product, quantity: 1 }]);
+          }
+        } catch (err) {
+          console.error("Erro ao adicionar ao carrinho no Supabase:", err);
+        }
+      })();
     } else {
-      setCart((prevCart) => [...prevCart, { ...product, quantity: 1 }]);
+      if (existingProduct) {
+        updateQtyCart(product.id, existingProduct.quantity + 1);
+      } else {
+        const next = [...cart, { ...product, quantity: 1 }];
+        setCart(next);
+        localStorage.setItem("cart_guest", JSON.stringify(next));
+      }
     }
   }
 
+  // Função para remover produto do carrinho
   function removeFromCart(productId) {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+    if (session && session.user) {
+      (async () => {
+        try {
+          await supabase
+            .from("cart")
+            .delete()
+            .eq("user_id", session.user.id)
+            .eq("product_id", productId);
+          setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+        } catch (err) {
+          console.error("Erro ao remover do carrinho:", err);
+        }
+      })();
+    } else {
+      const next = cart.filter((item) => item.id !== productId);
+      setCart(next);
+      localStorage.setItem("cart_guest", JSON.stringify(next));
+    }
   }
 
+  // Função para atualizar quantidade de produto no carrinho
   function updateQtyCart(productId, quantity) {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity: quantity } : item
-      )
-    );
+    if (session && session.user) {
+      (async () => {
+        try {
+          await supabase
+            .from("cart")
+            .update({ quantity })
+            .eq("user_id", session.user.id)
+            .eq("product_id", productId);
+          setCart((prev) =>
+            prev.map((item) => (item.id === productId ? { ...item, quantity } : item))
+          );
+        } catch (err) {
+          console.error("Erro ao atualizar quantidade no carrinho:", err);
+        }
+      })();
+    } else {
+      const next = cart.map((item) => (item.id === productId ? { ...item, quantity } : item));
+      setCart(next);
+      localStorage.setItem("cart_guest", JSON.stringify(next));
+    }
   }
 
+  // Função para limpar o carrinho
   function clearCart() {
-    setCart([]);
-  }
-
-  // User Session Management
-  const [session, setSession] = useState(null);
-  const [sessionLoading, setSessionLoading] = useState(false);
-  const [sessionMessage, setSessionMessage] = useState(null);
-  const [sessionError, setSessionError] = useState(null);
-
-  async function handleSignUp(email, password, username) {
-    setSessionLoading(true);
-    setSessionMessage(null);
-    setSessionError(null);
-
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            username: username,
-            admin: false,
-          },
-          emailRedirectTo: `${window.location.origin}/signin`,
-        },
-      });
-
-      if (error) throw error;
-
-      if (data.user) {
-        setSessionMessage(
-          "Registration successful! Check your email to confirm your account."
-        );
-        window.location.href = "/signin";
-      }
-    } catch (error) {
-      setSessionError(error.message);
-    } finally {
-      setSessionLoading(false);
-    }
-  }
-
-  async function handleSignIn(email, password) {
-    setSessionLoading(true);
-    setSessionMessage(null);
-    setSessionError(null);
-
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-
-      if(data.session){
-        setSession(data.session);
-        setSessionMessage("Sign in successful!");
-      }
-    } catch (error) {
-      setSessionError(error.message);
-    } finally {
-      setSessionLoading(false);
-    }
-  }
-
-  async function handleSignOut() {
-    setSessionLoading(true);
-    setSessionMessage(null);
-    setSessionError(null);
-
-    try {
-      const { error } = await supabase.auth.signOut();
-
-      if (error) throw error;
-
-      setSession(null);
-      window.location.href = "/";
-    } catch (error) {
-      setSessionError(error.message);
-    } finally {
-      setSessionLoading(false);
+    if (session && session.user) {
+      (async () => {
+        try {
+          await supabase.from("cart").delete().eq("user_id", session.user.id);
+          setCart([]);
+        } catch (err) {
+          console.error("Erro ao limpar carrinho:", err);
+        }
+      })();
+    } else {
+      setCart([]);
+      localStorage.removeItem("cart_guest");
     }
   }
 
@@ -177,14 +199,7 @@ export function CartProvider({ children }) {
     updateQtyCart: updateQtyCart,
     removeFromCart: removeFromCart,
     clearCart: clearCart,
-    // Context to manage user session
-    session: session,
-    sessionLoading: sessionLoading,
-    sessionMessage: sessionMessage,
-    sessionError: sessionError,
-    handleSignUp: handleSignUp,
-    handleSignIn: handleSignIn,
-    handleSignOut: handleSignOut,
+    refreshProducts: refreshProducts,
   };
 
   return (

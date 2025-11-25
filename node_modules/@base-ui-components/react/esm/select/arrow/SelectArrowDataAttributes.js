@@ -1,0 +1,30 @@
+import { CommonPopupDataAttributes } from "../../utils/popupStateMapping.js";
+export let SelectArrowDataAttributes = function (SelectArrowDataAttributes) {
+  /**
+   * Present when the select popup is open.
+   */
+  SelectArrowDataAttributes[SelectArrowDataAttributes["open"] = CommonPopupDataAttributes.open] = "open";
+  /**
+   * Present when the select popup is closed.
+   */
+  SelectArrowDataAttributes[SelectArrowDataAttributes["closed"] = CommonPopupDataAttributes.closed] = "closed";
+  /**
+   * Present when the anchor is hidden.
+   */
+  SelectArrowDataAttributes[SelectArrowDataAttributes["anchorHidden"] = CommonPopupDataAttributes.anchorHidden] = "anchorHidden";
+  /**
+   * Indicates which side the popup is positioned relative to the trigger.
+   * @type {'none' | 'top' | 'bottom' | 'left' | 'right' | 'inline-end' | 'inline-start'}
+   */
+  SelectArrowDataAttributes["side"] = "data-side";
+  /**
+   * Indicates how the popup is aligned relative to specified side.
+   * @type {'start' | 'center' | 'end'}
+   */
+  SelectArrowDataAttributes["align"] = "data-align";
+  /**
+   * Present when the select arrow is uncentered.
+   */
+  SelectArrowDataAttributes["uncentered"] = "data-uncentered";
+  return SelectArrowDataAttributes;
+}({});

@@ -1,0 +1,2 @@
+import { useToastManager } from "../useToastManager.js";
+export declare function resolvePromiseOptions<T, Data extends object>(options: string | useToastManager.UpdateOptions<Data> | ((result: T) => string | useToastManager.UpdateOptions<Data>), result?: T): useToastManager.UpdateOptions<Data>;
