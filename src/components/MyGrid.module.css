@@ -1,4 +1,370 @@
+
+.container {
+  display: grid;
+  grid-template-areas:
+    "header1 header1 header1"
+    "asideLeft header2 asideRight"
+    "asideLeft main asideRight"
+    "footer footer footer";
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-rows: 10rem 5rem auto 10rem;
+  min-height: 100vh;
+}
+.header1 {
+  grid-area: header1;
+  background-color: #fdfdfd;
+  color: #b10f0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.header2 {
+  grid-area: header2;
+  background-color: #c8102e;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+
+.main {
+  grid-area: main;
+  padding: 2rem;
+}
+
+.footer {
+  grid-area: footer;
+  background-color: #000000;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  font-size: 1.2rem;
+}
+
 .grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+}
+
+.card {
+  background-color: #920019;
+  color: rgb(0, 0, 0);
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0.3rem 0.3rem 1rem rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.card img {
+  width: 100%;
+  border-radius: 2.5rem;
+  max-height: 180px;
+  object-fit: cover;
+}
+
+/* Responsivo */
+/*@media (max-width: 1200px) {
+  .container {
+    grid-template-areas:
+      "header1"
+      "header2"
+      "asideLeft"
+      "main"
+      "footer";
+    grid-template-columns: 1fr;
+  }
+
+  .asideRight {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-areas:
+      "header2"
+      "main";
+    grid-template-rows: auto 1fr;
+  }
+
+  .header1,
+  .asideLeft,
+  .asideRight,
+  .footer {
+    display: none;
+  }
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*.container {
+  display: grid;
+  grid-template-areas:
+    "header1 header1 header1"
+    "asideLeft header2 asideRight"
+    "asideLeft main asideRight"
+    "asideLeft footer footer"
+    "footer2 footer2 footer2";
+
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-rows: 10rem 5rem auto 10rem 10rem;
+  min-height: 100vh;
+}*/
+
+/* Áreas principais */
+/*.header1 {
+  grid-area: header1;
+  background-color: darkslateblue;
+}
+
+.header2 {
+  grid-area: header2;
+  background-color: deepskyblue;
+}
+
+.asideLeft {
+  grid-area: asideLeft;
+  background-color: deeppink;
+}
+
+.asideRight {
+  grid-area: asideRight;
+  background-color: deeppink;
+}
+
+.main {
+  grid-area: main;
+}
+
+.footer {
+  grid-area: footer;
+  background-color: darkslateblue;
+}
+
+.footer2 {
+  grid-area: footer2;
+  background-color: darkblue;
+}*/
+
+/* Cards no main */
+/*.grid {
+  padding: 2rem;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 20rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background-color: var(--primary-dark, #333);
+  color: var(--primary-contrast-light, #fff);
+  box-shadow: 0.5rem 0.5rem 1rem rgba(0, 0, 0, 0.5);
+  text-align: center;
+  gap: 1rem;
+}*/
+
+/* Responsivo: abaixo de 1200px esconde asideRight */
+/*@media (max-width: 1200px) {
+  .container {
+    grid-template-areas:
+      "header1"
+      "header2"
+      "asideLeft"
+      "main"
+    "aside footer/*2"
+      "footer";
+    grid-template-columns: 1fr;
+  }
+
+  .asideRight {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+  .container {
+    grid-template-areas:
+      "header2"
+      "main";
+    grid-template-rows: auto 1fr;
+  }
+
+  .asideLeft,
+  .asideRight,
+  .header1,
+  .footer {
+    display: none;
+  }
+}
+}*/
+
+/* Responsivo: abaixo de 768px esconde tudo exceto header2 e main */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*.grid {
   padding: 3rem;
   display: grid;
   gap: 3rem;
@@ -59,7 +425,16 @@
   }
 }
 
+.aside2 {
+  grid-area: aside2;
+  background-color: deeppink;
+
+  @media (max-width: 1200px) {
+    display: none;
+  }
+}
+
 .footer {
   grid-area: footer;
   background-color: darkslateblue;
-}
+}*/
